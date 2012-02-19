@@ -73,3 +73,9 @@
 @end
 
 #endif
+
+@interface AFImageCache : NSCache
+- (UIImage *)cachedImageForRequest:(NSURLRequest *)request;
+- (void)cacheImageData:(NSData *)imageData
+            forRequest:(NSURLRequest *)request;
+@end

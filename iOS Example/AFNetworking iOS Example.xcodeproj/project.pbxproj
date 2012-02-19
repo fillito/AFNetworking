@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1D618D4614F10E020070F1F4 /* AFImageCache+AlternativeImageCacheForAFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D618D4414F10E020070F1F4 /* AFImageCache+AlternativeImageCacheForAFNetworking.m */; };
+		1D618D4A14F1102E0070F1F4 /* EGOCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D618D4914F1102E0070F1F4 /* EGOCache.m */; };
 		F8689A9914CC9F5E0087F357 /* AFJSONUtilities.m in Sources */ = {isa = PBXBuildFile; fileRef = F8689A9814CC9F5E0087F357 /* AFJSONUtilities.m */; };
 		F86E5529143A28F3002B438C /* AFURLConnectionOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F86E5528143A28F3002B438C /* AFURLConnectionOperation.m */; };
 		F874B5D913E0AA6500B28E3E /* AFHTTPRequestOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = F874B5C913E0AA6500B28E3E /* AFHTTPRequestOperation.m */; };
@@ -40,6 +42,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		1D618D4414F10E020070F1F4 /* AFImageCache+AlternativeImageCacheForAFNetworking.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "AFImageCache+AlternativeImageCacheForAFNetworking.m"; path = "../AFNetworking/JSCategories/AFImageCache+AlternativeImageCacheForAFNetworking.m"; sourceTree = "<group>"; };
+		1D618D4514F10E020070F1F4 /* AFImageCache+AlternativeImageCacheForAFNetworking.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "AFImageCache+AlternativeImageCacheForAFNetworking.h"; path = "../AFNetworking/JSCategories/AFImageCache+AlternativeImageCacheForAFNetworking.h"; sourceTree = "<group>"; };
+		1D618D4814F1102E0070F1F4 /* EGOCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EGOCache.h; sourceTree = "<group>"; };
+		1D618D4914F1102E0070F1F4 /* EGOCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EGOCache.m; sourceTree = "<group>"; };
 		F8323C941455C03400190CCB /* AFJSONUtilities.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFJSONUtilities.h; path = ../AFNetworking/AFJSONUtilities.h; sourceTree = "<group>"; };
 		F8689A9814CC9F5E0087F357 /* AFJSONUtilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = AFJSONUtilities.m; path = ../AFNetworking/AFJSONUtilities.m; sourceTree = "<group>"; };
 		F86E5527143A28F3002B438C /* AFURLConnectionOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AFURLConnectionOperation.h; path = ../AFNetworking/AFURLConnectionOperation.h; sourceTree = "<group>"; };
@@ -110,6 +116,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1D618D4214F10DE10070F1F4 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				1D618D4414F10E020070F1F4 /* AFImageCache+AlternativeImageCacheForAFNetworking.m */,
+				1D618D4514F10E020070F1F4 /* AFImageCache+AlternativeImageCacheForAFNetworking.h */,
+			);
+			name = Categories;
+			sourceTree = "<group>";
+		};
+		1D618D4714F1102E0070F1F4 /* EGOCache */ = {
+			isa = PBXGroup;
+			children = (
+				1D618D4814F1102E0070F1F4 /* EGOCache.h */,
+				1D618D4914F1102E0070F1F4 /* EGOCache.m */,
+			);
+			name = EGOCache;
+			path = ../AFNetworking/Vendor/EGOCache;
+			sourceTree = "<group>";
+		};
 		F8D25D0F1396A9C400CF3BD6 /* JSONKit */ = {
 			isa = PBXGroup;
 			children = (
@@ -220,6 +245,8 @@
 		F8E469931395743A00DB05C8 /* Vendor */ = {
 			isa = PBXGroup;
 			children = (
+				1D618D4714F1102E0070F1F4 /* EGOCache */,
+				1D618D4214F10DE10070F1F4 /* Categories */,
 				F8E469941395744600DB05C8 /* AFNetworking */,
 				F8D25D0F1396A9C400CF3BD6 /* JSONKit */,
 				F8D25D121396A9C400CF3BD6 /* FormatterKit */,
@@ -363,6 +390,8 @@
 				F8F4B16E143CD1420064C9E6 /* AFPropertyListRequestOperation.m in Sources */,
 				F8F4B17F143E07030064C9E6 /* AFXMLRequestOperation.m in Sources */,
 				F8689A9914CC9F5E0087F357 /* AFJSONUtilities.m in Sources */,
+				1D618D4614F10E020070F1F4 /* AFImageCache+AlternativeImageCacheForAFNetworking.m in Sources */,
+				1D618D4A14F1102E0070F1F4 /* EGOCache.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

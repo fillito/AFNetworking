@@ -23,18 +23,16 @@
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
 
+#import "AFImageCache+AlternativeImageCacheForAFNetworking.h"
+
 #if __IPHONE_OS_VERSION_MIN_REQUIRED
 #import "UIImageView+AFNetworking.h"
-
-@interface AFImageCache : NSCache
-- (UIImage *)cachedImageForRequest:(NSURLRequest *)request;
-- (void)cacheImageData:(NSData *)imageData
-            forRequest:(NSURLRequest *)request;
-@end
 
 #pragma mark -
 
 static char kAFImageRequestOperationObjectKey;
+
+static dispatch_queue_t imageCacheLoadingQueue;
 
 @interface UIImageView (_AFNetworking)
 @property (readwrite, nonatomic, retain, setter = af_setImageRequestOperation:) AFImageRequestOperation *af_imageRequestOperation;
@@ -47,6 +45,11 @@ static char kAFImageRequestOperationObjectKey;
 #pragma mark -
 
 @implementation UIImageView (AFNetworking)
+
++ (void)load
+{
+    imageCacheLoadingQueue = dispatch_queue_create("UIImageViewCacheLoadingQueue", DISPATCH_QUEUE_CONCURRENT);
+}
 
 - (AFHTTPRequestOperation *)af_imageRequestOperation {
     return (AFHTTPRequestOperation *)objc_getAssociatedObject(self, &kAFImageRequestOperationObjectKey);
@@ -100,42 +103,49 @@ static char kAFImageRequestOperationObjectKey;
 {
     [self cancelImageRequestOperation];
     
-    UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
-    if (cachedImage) {
-        self.image = cachedImage;
-        self.af_imageRequestOperation = nil;
-        
-        if (success) {
-            success(nil, nil, cachedImage);
-        }
-    } else {
-        self.image = placeholderImage;
-        
-        AFImageRequestOperation *requestOperation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
-        [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-            if ([[urlRequest URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
-                self.image = responseObject;
+    self.image = placeholderImage;
+    
+    // Load from cache in a background queue
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            if (cachedImage) {
+                self.image = cachedImage;
+                self.af_imageRequestOperation = nil;
+                
+                if (success) {
+                    success(nil, nil, cachedImage);
+                }
+            } else {
+                self.image = placeholderImage;
+                
+                AFImageRequestOperation *requestOperation = [[[AFImageRequestOperation alloc] initWithRequest:urlRequest] autorelease];
+                [requestOperation setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
+                    if ([[urlRequest URL] isEqual:[[self.af_imageRequestOperation request] URL]]) {
+                        self.image = responseObject;
+                    }
+                    
+                    if (success) {
+                        success(operation.request, operation.response, responseObject);
+                    }
+                    
+                    [[[self class] af_sharedImageCache] cacheImageData:operation.responseData forRequest:urlRequest];
+                    
+                    self.af_imageRequestOperation = nil;
+                } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
+                    if (failure) {
+                        failure(operation.request, operation.response, error);
+                    }
+                    
+                    self.af_imageRequestOperation = nil;
+                }];
+                
+                self.af_imageRequestOperation = requestOperation;
+                
+                [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
             }
-
-            if (success) {
-                success(operation.request, operation.response, responseObject);
-            }
-
-            [[[self class] af_sharedImageCache] cacheImageData:operation.responseData forRequest:urlRequest];
-            
-            self.af_imageRequestOperation = nil;
-        } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-            if (failure) {
-                failure(operation.request, operation.response, error);
-            }
-            
-            self.af_imageRequestOperation = nil;
-        }];
-        
-        self.af_imageRequestOperation = requestOperation;
-        
-        [[[self class] af_sharedImageRequestOperationQueue] addOperation:self.af_imageRequestOperation];
-    }
+        });
+    });
 }
 
 - (void)cancelImageRequestOperation {
