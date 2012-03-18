@@ -106,7 +106,7 @@ static dispatch_queue_t imageCacheLoadingQueue;
     self.image = placeholderImage;
     
     // Load from cache in a background queue
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    dispatch_async(imageCacheLoadingQueue, ^{
         UIImage *cachedImage = [[[self class] af_sharedImageCache] cachedImageForRequest:urlRequest];
         dispatch_async(dispatch_get_main_queue(), ^{
             if (cachedImage) {
