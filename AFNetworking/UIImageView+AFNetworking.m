@@ -164,6 +164,10 @@ static inline NSString * AFImageCacheKeyFromURLRequest(NSURLRequest *request) {
 @implementation AFImageCache
 
 - (UIImage *)cachedImageForRequest:(NSURLRequest *)request {
+    
+    return [self cachedImageForURL:request.URL cacheName:request.URL.description];
+    
+    /*
     switch ([request cachePolicy]) {
         case NSURLRequestReloadIgnoringCacheData:
         case NSURLRequestReloadIgnoringLocalAndRemoteCacheData:
@@ -178,12 +182,14 @@ static inline NSString * AFImageCacheKeyFromURLRequest(NSURLRequest *request) {
 	}
     
     return image;
+     */
 }
 
 - (void)cacheImageData:(NSData *)imageData
             forRequest:(NSURLRequest *)request
 {
-    [self setObject:[NSPurgeableData dataWithData:imageData] forKey:AFImageCacheKeyFromURLRequest(request)];
+    [self cacheImageData:imageData forURL:request.URL cacheName:request.URL.description];
+    //[self setObject:[NSPurgeableData dataWithData:imageData] forKey:AFImageCacheKeyFromURLRequest(request)];
 }
 
 @end
